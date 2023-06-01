@@ -1,0 +1,78 @@
+#!/usr/bin/python3
+
+import math
+import sys
+
+def helper():
+    print("USAGE")
+    print("    ./107transfer [num den]*")
+    print("DESCRIPTION")
+    print("    num    polynomial numerator defined by its coeficients")
+    print("    den    polynomial denominator defined by its coeficients")
+
+def error_handler(ac):
+    if ((len(ac) < 2) or (len(ac) % 2 != 0)):
+        print("Wrong number of arguments... ")
+        sys.exit(84)
+    for arg in ac:
+        for is_ok_arg in arg:
+            if (is_ok_arg not in "*0123456789"):
+                print("Something went wrong... Try ./107transfer -h")
+                sys.exit(84)
+
+def get_polynom(x, coeficient):
+    val = coeficient[-1]
+    for i in reversed(range(len(coeficient) - 1)):
+        val = val * x + coeficient[i]
+    return (val)
+
+def function(numerator, denominator):
+    i = 0
+    numerator: float[list]
+    denominator: float[list]
+    print ("0.000 -> 0.00000")
+    try: 
+        while (i <= 1):
+            i = i + 0.001
+            val = 1
+            for j in range(len(numerator)):
+                num = get_polynom(i, numerator[j])
+                den = get_polynom(i, denominator[j])
+                if den == 0:
+                    print("Division by zero.")
+                    sys.exit(84)
+                val *= num / den
+            print(f"{i:.3f}", end = '')
+            print(" -> ", end = '')
+            print(f"{val:.5f}")
+    except ValueError:
+        sys.exit(84)
+
+def spliting(ac, numerator, denominator):
+    on_off = 1
+    for i in range(len(ac)):
+        if on_off:
+            numerator.append(list(map(float, ac[i].split("*"))))
+        else:
+            denominator.append(list(map(float, ac[i].split("*"))))
+        on_off = not on_off
+
+
+def main(ac):
+    numerator = []
+    denominator = []
+    if (len(sys.argv) < 2):
+        print("Something went wrong... Try ./107transfer -h")
+        sys.exit(84)
+    if sys.argv[1] == '-h':
+        helper()
+        sys.exit(0)
+    try:
+        error_handler(ac)
+        spliting(ac, numerator, denominator)
+        function(numerator, denominator)
+    except ValueError:
+        print("Something went wrong... Try ./107transfer -h")
+        sys.exit(84)
+
+main(sys.argv[1:])
